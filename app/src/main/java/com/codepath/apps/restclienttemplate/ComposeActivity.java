@@ -3,10 +3,13 @@ package com.codepath.apps.restclienttemplate;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.codepath.apps.restclienttemplate.models.Tweet;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -22,6 +25,8 @@ public class ComposeActivity extends AppCompatActivity {
     Button addButton;
     EditText editText;
     private TwitterClient client;
+    TextWatcher textWatcher;
+    TextView tvCharacterCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,8 +34,25 @@ public class ComposeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_compose);
 
         client = TwitterApp.getRestClient(this);
-        EditText editText = findViewById(R.id.editText);
-        Button addButton = findViewById(R.id.addButton);
+        editText = findViewById(R.id.editText);
+        addButton = findViewById(R.id.addButton);
+        tvCharacterCount = findViewById(R.id.tvCharacterCount);
+        textWatcher = new TextWatcher() {
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                //int remainingChars = 280 - s.length();
+                tvCharacterCount.setText(String.valueOf(280));
+            }
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                //This sets a text view to the current length
+                int remainingChars = 280 - s.length();
+                tvCharacterCount.setText(String.valueOf(remainingChars));
+            }
+
+            public void afterTextChanged(Editable s) {
+            }
+        };
+        editText.addTextChangedListener(textWatcher);
     }
 
     public void postTweet(View view) {
