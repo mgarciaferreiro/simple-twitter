@@ -9,6 +9,9 @@ public class Tweet {
     public long uid;
     public String createdAt;
     public User user;
+    public Integer retweetCount;
+    public Integer favoriteCount;
+    public boolean isLikedByUser;
 
     //deserialize the JSON
     public static Tweet fromJSON(JSONObject jsonObject) throws JSONException {
@@ -17,6 +20,13 @@ public class Tweet {
         tweet.uid = jsonObject.getLong("id");
         tweet.createdAt = jsonObject.getString("created_at");
         tweet.user = User.fromJSON(jsonObject.getJSONObject("user"));
+        tweet.retweetCount = jsonObject.getInt("retweet_count");
+        tweet.favoriteCount = jsonObject.getInt("favorite_count");
+        tweet.isLikedByUser = jsonObject.getBoolean("favorited");;
         return tweet;
+    }
+
+    public void setLikedByUser(boolean isLikedByUser) {
+        this.isLikedByUser = isLikedByUser;
     }
 }

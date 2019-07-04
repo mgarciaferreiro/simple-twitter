@@ -5,8 +5,15 @@
     tools:context=".TimelineActivity">
     <item
         android:id="@+id/miCompose"
-        android:icon="@android:drawable/ic_input_add"
-        app:showAsAction="ifRoom"
-        android:title="Compose">
-    </item>
+        android:icon="@drawable/ic_vector_compose"
+        android:title="Compose"
+        android:tint="@android:color/white"
+        app:showAsAction="ifRoom"></item>
+    <item
+        android:id="@+id/miActionProgress"
+        android:orderInCategory="100"
+        android:title="Loading..."
+        android:visible="false"
+        app:actionLayout="@layout/action_view_progress"
+        app:showAsAction="always" />
 </menu>

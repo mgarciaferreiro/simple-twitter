@@ -3,9 +3,13 @@ package com.codepath.apps.restclienttemplate;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -27,6 +31,7 @@ public class ComposeActivity extends AppCompatActivity {
     private TwitterClient client;
     TextWatcher textWatcher;
     TextView tvCharacterCount;
+    Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +42,9 @@ public class ComposeActivity extends AppCompatActivity {
         editText = findViewById(R.id.editText);
         addButton = findViewById(R.id.addButton);
         tvCharacterCount = findViewById(R.id.tvCharacterCount);
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
         textWatcher = new TextWatcher() {
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 //int remainingChars = 280 - s.length();
@@ -78,5 +86,24 @@ public class ComposeActivity extends AppCompatActivity {
                 Log.d("ComposeActivity", responseString);
             }
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_compose, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.cancel) {
+            Intent intent = new Intent(this, TimelineActivity.class);
+            startActivity(intent);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
