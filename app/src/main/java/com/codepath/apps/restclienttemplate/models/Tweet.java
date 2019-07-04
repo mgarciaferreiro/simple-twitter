@@ -2,7 +2,9 @@ package com.codepath.apps.restclienttemplate.models;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.parceler.Parcel;
 
+@Parcel
 public class Tweet {
 
     public String body;
@@ -22,7 +24,7 @@ public class Tweet {
         tweet.user = User.fromJSON(jsonObject.getJSONObject("user"));
         tweet.retweetCount = jsonObject.getInt("retweet_count");
         tweet.favoriteCount = jsonObject.getInt("favorite_count");
-        tweet.isLikedByUser = jsonObject.getBoolean("favorited");;
+        tweet.isLikedByUser = jsonObject.getBoolean("favorited");
         return tweet;
     }
 

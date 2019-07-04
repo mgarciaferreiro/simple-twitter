@@ -32,6 +32,9 @@ public class ComposeActivity extends AppCompatActivity {
     TextWatcher textWatcher;
     TextView tvCharacterCount;
     Toolbar toolbar;
+    boolean isReply;
+    Tweet prevTweet;
+    TextView tvReplyingTo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,12 +45,20 @@ public class ComposeActivity extends AppCompatActivity {
         editText = findViewById(R.id.editText);
         addButton = findViewById(R.id.addButton);
         tvCharacterCount = findViewById(R.id.tvCharacterCount);
+        tvReplyingTo = findViewById(R.id.tvReplyingTo);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        isReply = getIntent().getBooleanExtra("isReply", false);
+
+        if (isReply) {
+            prevTweet = Parcels.unwrap(getIntent().getParcelableExtra("prevTweet"));
+            tvReplyingTo.setText("Replying to @" + prevTweet.user.screenName);
+            editText.setText("@" + prevTweet.user.screenName);
+        }
+
         textWatcher = new TextWatcher() {
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                //int remainingChars = 280 - s.length();
                 tvCharacterCount.setText(String.valueOf(280));
             }
 
@@ -65,27 +76,54 @@ public class ComposeActivity extends AppCompatActivity {
 
     public void postTweet(View view) {
         String body = editText.getText().toString();
-        client.postTweet(body, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                try {
-                    Tweet tweet = Tweet.fromJSON(response);
-                    Intent intent = new Intent();
-                    Log.i("ComposeActivity", tweet.user.toString());
-                    intent.putExtra("tweet", Parcels.wrap(tweet));
-                    // Activity finished ok, return the data
-                    setResult(RESULT_OK, intent); // set result code and bundle data for response
-                    finish(); // closes the activity, pass data to parent
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
+        if (isReply) {
+            client.replyToTweet(body, prevTweet.uid, new JsonHttpResponseHandler() {
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                Log.d("ComposeActivity", responseString);
-            }
-        });
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                    try {
+                        Tweet tweet = Tweet.fromJSON(response);
+                        Intent intent = new Intent();
+                        Log.i("ComposeActivity", tweet.user.toString());
+                        intent.putExtra("tweet", Parcels.wrap(tweet));
+                        // Activity finished ok, return the data
+                        setResult(RESULT_OK, intent); // set result code and bundle data for response
+                        finish(); // closes the activity, pass data to parent
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                    Log.d("TweetAdapter", responseString);
+                }
+            });
+
+        } else {
+            client.postTweet(body, new JsonHttpResponseHandler() {
+
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                    try {
+                        Tweet tweet = Tweet.fromJSON(response);
+                        Intent intent = new Intent();
+                        Log.i("ComposeActivity", tweet.user.toString());
+                        intent.putExtra("tweet", Parcels.wrap(tweet));
+                        // Activity finished ok, return the data
+                        setResult(RESULT_OK, intent); // set result code and bundle data for response
+                        finish(); // closes the activity, pass data to parent
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                    Log.d("ComposeActivity", responseString);
+                }
+            });
+        }
     }
 
     @Override

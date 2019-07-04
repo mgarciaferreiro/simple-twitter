@@ -153,6 +153,7 @@ public class TimelineActivity extends AppCompatActivity {
 
         if (id == R.id.miCompose) {
             Intent intent = new Intent(this, ComposeActivity.class);
+            intent.putExtra("isReply", false);
             startActivityForResult(intent, 1);
             return true;
         }

@@ -74,10 +74,11 @@ public class TwitterClient extends OAuthBaseClient {
 		getClient().post(apiUrl, params, handler);
 	}
 
-	public void replyToTweet(Long id, AsyncHttpResponseHandler handler) {
+	public void replyToTweet(String body, Long id, AsyncHttpResponseHandler handler) {
 		String apiUrl = getApiUrl("statuses/update.json");
 		RequestParams params = new RequestParams();
-		params.put("id", id);
+		params.put("in_reply_to_status_id", id);
+		params.put("status", body);
 		getClient().post(apiUrl, params, handler);
 	}
 

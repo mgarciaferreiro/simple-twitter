@@ -1,9 +1,9 @@
 package com.codepath.apps.restclienttemplate;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.DateUtils;
 import android.util.Log;
@@ -21,8 +21,8 @@ import com.bumptech.glide.request.RequestOptions;
 import com.codepath.apps.restclienttemplate.models.Tweet;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
+import org.parceler.Parcels;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -57,6 +57,7 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder> 
     }
 
     // bind values based on position of the element
+    @SuppressLint("NewApi")
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder viewHolder, final int position) {
         final Tweet tweet = mTweets.get(position);
@@ -77,29 +78,21 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder> 
         viewHolder.tvDate.setText(getRelativeTimeAgo(tweet.createdAt));
 
         if (tweet.isLikedByUser) {
-            DrawableCompat.setTint(
-                    DrawableCompat.wrap(viewHolder.heartButton.getBackground()),
-                    ContextCompat.getColor(context, R.color.medium_red)
-            );
+            viewHolder.heartButton.setBackgroundTintList(context.getResources().getColorStateList(R.color.medium_red));
         } else {
-            DrawableCompat.setTint(
-                    DrawableCompat.wrap(viewHolder.heartButton.getBackground()),
-                    ContextCompat.getColor(context, R.color.medium_gray)
-            );
+            viewHolder.heartButton.setBackgroundTintList(context.getResources().getColorStateList(R.color.medium_gray));
         }
-        DrawableCompat.setTint(
-                DrawableCompat.wrap(viewHolder.replyButton.getBackground()),
-                ContextCompat.getColor(context, R.color.medium_gray)
-        );
-        DrawableCompat.setTint(
-                DrawableCompat.wrap(viewHolder.retweetButton.getBackground()),
-                ContextCompat.getColor(context, R.color.medium_gray)
-        );
+
+        viewHolder.replyButton.setBackgroundTintList(context.getResources().getColorStateList(R.color.medium_gray));
+        viewHolder.retweetButton.setBackgroundTintList(context.getResources().getColorStateList(R.color.medium_gray));
 
         viewHolder.replyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: implement reply
+                Intent intent = new Intent(context, ComposeActivity.class);
+                intent.putExtra("isReply", true);
+                intent.putExtra("prevTweet", Parcels.wrap(tweet));
+                context.startActivity(intent);
             }
         });
 
@@ -107,10 +100,7 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder> 
             @Override
             public void onClick(View v) {
                 retweet(v, position);
-                DrawableCompat.setTint(
-                        DrawableCompat.wrap(viewHolder.retweetButton.getBackground()),
-                        ContextCompat.getColor(context, R.color.medium_green)
-                );
+                viewHolder.retweetButton.setBackgroundTintList(context.getResources().getColorStateList(R.color.medium_green));
             }
         });
 
@@ -120,17 +110,11 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder> 
                 if (tweet.isLikedByUser) {
                     unlikeTweet(v, position);
                     tweet.setLikedByUser(false);
-                    DrawableCompat.setTint(
-                            DrawableCompat.wrap(viewHolder.heartButton.getBackground()),
-                            ContextCompat.getColor(context, R.color.medium_gray)
-                    );
+                    notifyItemChanged(position);
                 } else {
                     likeTweet(v, position);
                     tweet.setLikedByUser(true);
-                    DrawableCompat.setTint(
-                            DrawableCompat.wrap(viewHolder.heartButton.getBackground()),
-                            ContextCompat.getColor(context, R.color.medium_red)
-                    );
+                    notifyItemChanged(position);
                 }
             }
         });
@@ -183,16 +167,6 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder> 
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 Log.d("TweetAdapter", responseString);
             }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                Log.d("TweetAdapter", errorResponse.toString());
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                Log.d("TweetAdapter", errorResponse.toString());
-            }
         });
     }
 
@@ -209,17 +183,6 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder> 
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 Log.d("TweetAdapter", responseString);
             }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                Log.d("TweetAdapter", errorResponse.toString());
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                Log.d("TweetAdapter", errorResponse.toString());
-            }
-
         });
     }
 
@@ -235,16 +198,6 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder> 
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 Log.d("TweetAdapter", responseString);
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                Log.d("TweetAdapter", errorResponse.toString());
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                Log.d("TweetAdapter", errorResponse.toString());
             }
         });
     }
