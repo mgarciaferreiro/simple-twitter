@@ -42,10 +42,10 @@ public class UserActivity extends AppCompatActivity {
         user = Parcels.unwrap(getIntent().getParcelableExtra("user"));
 
         name.setText(user.name);
-        screenName.setText(user.screenName);
+        screenName.setText("@" + user.screenName);
         description.setText(user.description);
-        followers.setText(String.valueOf(user.followersCount) + " Followers");
-        friends.setText(String.valueOf(user.friendsCount) + " Friends");
+        followers.setText(user.followersCount + " Followers");
+        friends.setText(user.friendsCount + " Friends");
 
         RequestOptions requestOptionsMedia = new RequestOptions();
         requestOptionsMedia = requestOptionsMedia.transforms(new CenterCrop(), new RoundedCorners(100));

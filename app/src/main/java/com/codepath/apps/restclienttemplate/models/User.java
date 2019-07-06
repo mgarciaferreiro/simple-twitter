@@ -1,5 +1,7 @@
 package com.codepath.apps.restclienttemplate.models;
 
+import android.util.Log;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.parceler.Parcel;
@@ -11,6 +13,10 @@ public class User {
     public long uid;
     public String screenName;
     public String profileImageUrl;
+    public String backgroundImageUrl;
+    public Integer followersCount;
+    public Integer friendsCount;
+    public String description;
 
     public static User fromJSON(JSONObject json) throws JSONException {
         User user = new User();
@@ -18,6 +24,11 @@ public class User {
         user.uid = json.getLong("id");
         user.screenName = json.getString("screen_name");
         user.profileImageUrl = json.getString("profile_image_url_https");
+        user.backgroundImageUrl = json.getString("profile_banner_url");
+        Log.i("User", user.backgroundImageUrl);
+        user.followersCount = json.getInt("followers_count");
+        user.friendsCount = json.getInt("friends_count");
+        user.description = json.getString("description");
         return user;
     }
 }

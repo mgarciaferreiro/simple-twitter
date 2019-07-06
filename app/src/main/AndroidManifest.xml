@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.codepath.apps.restclienttemplate"
+    android:targetSandboxVersion="1"
     android:versionCode="1"
     android:versionName="1.0">
 
@@ -12,8 +13,10 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme">
-        <activity android:name=".ComposeActivity"></activity>
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true">
+        <activity android:name=".UserActivity"></activity>
+        <activity android:name=".ComposeActivity" />
         <activity android:name=".TimelineActivity" />
         <activity
             android:name=".LoginActivity"
