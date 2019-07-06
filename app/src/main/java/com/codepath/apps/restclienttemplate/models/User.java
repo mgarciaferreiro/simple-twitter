@@ -1,7 +1,5 @@
 package com.codepath.apps.restclienttemplate.models;
 
-import android.util.Log;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.parceler.Parcel;
@@ -24,8 +22,9 @@ public class User {
         user.uid = json.getLong("id");
         user.screenName = json.getString("screen_name");
         user.profileImageUrl = json.getString("profile_image_url_https");
-        user.backgroundImageUrl = json.getString("profile_banner_url");
-        Log.i("User", user.backgroundImageUrl);
+        if (json.has("profile_banner_url")) {
+            user.backgroundImageUrl = json.getString("profile_banner_url");
+        }
         user.followersCount = json.getInt("followers_count");
         user.friendsCount = json.getInt("friends_count");
         user.description = json.getString("description");

@@ -72,6 +72,13 @@ public class ComposeActivity extends AppCompatActivity {
             }
         };
         editText.addTextChangedListener(textWatcher);
+
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                postTweet(v);
+            }
+        });
     }
 
     public void postTweet(View view) {
@@ -120,6 +127,7 @@ public class ComposeActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                    Log.d("ComposeActivity", "failed to tweet");
                     Log.d("ComposeActivity", responseString);
                 }
             });

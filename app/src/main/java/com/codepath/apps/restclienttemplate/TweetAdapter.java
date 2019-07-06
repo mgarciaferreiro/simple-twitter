@@ -34,7 +34,6 @@ import cz.msebera.android.httpclient.Header;
 public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder> {
 
     private List<Tweet> mTweets;
-    //Context context;
     TwitterClient client;
     Activity timeLineActivity;
 
@@ -49,7 +48,6 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder> 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        //context = viewGroup.getContext();
         client = TwitterApp.getRestClient(timeLineActivity);
         LayoutInflater inflater = LayoutInflater.from(timeLineActivity);
 
@@ -81,6 +79,7 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder> 
 
         if (tweet.mediaUrl != null) {
             viewHolder.mediaView.setVisibility(View.VISIBLE);
+            Log.i("TweetAdapter", tweet.mediaUrl);
             RequestOptions requestOptionsMedia = new RequestOptions();
             requestOptionsMedia = requestOptionsMedia.transforms(new CenterCrop(), new RoundedCorners(20));
             Glide.with(timeLineActivity)
@@ -122,10 +121,12 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder> 
                 if (tweet.isRetweeted) {
                     unretweet(v, position);
                     tweet.setRetweetedByUser(false);
+                    tweet.retweetCount--;
                     notifyItemChanged(position);
                 } else {
                     retweet(v, position);
                     tweet.setRetweetedByUser(true);
+                    tweet.retweetCount++;
                     notifyItemChanged(position);
                 }
             }
@@ -137,10 +138,12 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder> 
                 if (tweet.isLikedByUser) {
                     unlikeTweet(v, position);
                     tweet.setLikedByUser(false);
+                    tweet.favoriteCount--;
                     notifyItemChanged(position);
                 } else {
                     likeTweet(v, position);
                     tweet.setLikedByUser(true);
+                    tweet.favoriteCount++;
                     notifyItemChanged(position);
                 }
             }
@@ -232,10 +235,6 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder> 
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                mTweets.add(0, tweet);
-                notifyItemInserted(0);
-                RecyclerView rvTweets = timeLineActivity.findViewById(R.id.rvTweet);
-                rvTweets.scrollToPosition(0);
                 Log.i("TweetAdapter", "Retweeted tweet");
             }
 
@@ -252,7 +251,6 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder> 
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                notifyDataSetChanged();
                 Log.i("TweetAdapter", "Unretweeted tweet");
             }
 

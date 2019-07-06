@@ -30,12 +30,10 @@ public class Tweet {
         tweet.isLikedByUser = jsonObject.getBoolean("favorited");
         tweet.isRetweeted = jsonObject.getBoolean("retweeted");
         JSONObject entities = jsonObject.getJSONObject("entities");
-        try {
+        if (entities.has("media")) {
             JSONArray media = entities.getJSONArray("media");
             JSONObject firstMedia = media.getJSONObject(0);
             tweet.mediaUrl =  firstMedia.getString("media_url");
-        } catch (JSONException e) {
-            e.printStackTrace();
         }
         return tweet;
     }

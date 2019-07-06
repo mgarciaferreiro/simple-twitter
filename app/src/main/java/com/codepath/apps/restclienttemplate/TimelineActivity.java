@@ -97,7 +97,6 @@ public class TimelineActivity extends AppCompatActivity {
         client.getHomeTimeline(maxId, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                Log.d("TwitterClient", response.toString());
                 if (isFirstLoad) {
                     tweetAdapter.clear();
                 }
@@ -163,7 +162,13 @@ public class TimelineActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        if (resultCode == RESULT_OK) {
+        if (resultCode == RESULT_OK && requestCode == 1) {
+            Tweet tweet = Parcels.unwrap(intent.getParcelableExtra("tweet"));
+            tweets.add(0, tweet);
+            Log.i("TimelineActivity", "posted tweet");
+            tweetAdapter.notifyItemInserted(0);
+            rvTweets.scrollToPosition(0);
+        } else if (resultCode == RESULT_OK && requestCode == 2) {
             Tweet tweet = Parcels.unwrap(intent.getParcelableExtra("tweet"));
             tweets.add(0, tweet);
             Log.i("TimelineActivity", "posted tweet");
