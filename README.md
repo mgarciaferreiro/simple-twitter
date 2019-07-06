@@ -66,7 +66,7 @@ I implemented modal overlay but it wasn't working as I wanted and I didn't have 
 
 ## License
 
-    Copyright [yyyy] [name of copyright owner]
+    Copyright [2019] [Marta Garcia Ferreiro]
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
